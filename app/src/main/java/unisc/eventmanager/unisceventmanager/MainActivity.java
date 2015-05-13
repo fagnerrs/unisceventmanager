@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import unisc.eventmanager.unisceventmanager.classes.NavigationManager;
+import unisc.eventmanager.unisceventmanager.fragments.EventFragment;
+
 
 public class MainActivity extends ActionBarActivity {
 
@@ -12,6 +15,9 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        NavigationManager.Initialize(this.getFragmentManager());
+        NavigationManager.Navigate(new EventFragment());
     }
 
 
@@ -35,5 +41,14 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        if (NavigationManager.Back())
+        {
+            super.onBackPressed();
+        }
     }
 }
