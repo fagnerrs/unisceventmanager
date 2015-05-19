@@ -1,7 +1,8 @@
 package unisc.eventmanager.unisceventmanager;
 
-import android.support.v7.app.ActionBarActivity;
+import android.app.ActionBar;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -9,14 +10,16 @@ import unisc.eventmanager.unisceventmanager.classes.NavigationManager;
 import unisc.eventmanager.unisceventmanager.fragments.EventFragment;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        NavigationManager.Initialize(this.getFragmentManager());
+        final ActionBar actionBar = getActionBar();
+
+        NavigationManager.Initialize(this.getFragmentManager(), actionBar);
         NavigationManager.Navigate(new EventFragment());
     }
 
@@ -39,8 +42,11 @@ public class MainActivity extends ActionBarActivity {
         if (id == R.id.action_settings) {
             return true;
         }
-
-        return super.onOptionsItemSelected(item);
+        else
+        {
+            onBackPressed();
+            return true;
+        }
     }
 
     @Override

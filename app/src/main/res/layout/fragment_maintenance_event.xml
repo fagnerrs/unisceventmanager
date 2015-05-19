@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:ems="10"
-        android:id="@+id/editText" />
+        android:id="@+id/maintenance_event_EdtDescr" />
 
 
     <TextView
@@ -30,33 +30,89 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <EditText
+        <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:inputType="datetime"
-            android:ems="10"/>
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Data" />
+
+
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Até" />
+            android:text="Hora"/>
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <EditText
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:inputType="datetime"
-            android:ems="10"/>
+            android:ems="10"
+            android:id="@+id/maintenance_event_EdtDataDe" />
+
+
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:inputType="datetime"
+            android:ems="10"
+            android:id="@+id/maintenance_event_EdtHoraDe" />
+
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Até" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:inputType="datetime"
+            android:ems="10"
+            android:id="@+id/maintenance_event_EdtDataAte" />
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:inputType="datetime"
+            android:ems="10"
+            android:id="@+id/maintenance_event_EdtHoraAte" />
+
 
     </LinearLayout>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Novo Encontro"/>
+        android:text="Novo Encontro"
+        android:id="@+id/maintenance_event_BtnNovoEncontro" />
+
 
     <TextView
         android:layout_width="wrap_content"

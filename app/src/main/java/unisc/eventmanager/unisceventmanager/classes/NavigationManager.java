@@ -1,5 +1,6 @@
 package unisc.eventmanager.unisceventmanager.classes;
 
+import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -25,10 +26,21 @@ public class NavigationManager {
 
     private static FragmentManager m_FragmentManager = null;
     private static Stack<Fragment> _pilhaDeNavegacao = null;
+    private static ActionBar m_ActionBar;
 
     public static void Navigate(Fragment fragment)
     {
-        FragmentTransaction ft = m_FragmentManager.beginTransaction();
+        if (fragment.getClass().getName().equals("unisc.eventmanager.unisceventmanager.fragments.EventFragment"))
+        {
+            m_ActionBar.setDisplayHomeAsUpEnabled(false);
+        }
+        else
+        {
+            m_ActionBar.setDisplayHomeAsUpEnabled(true);
+
+        }
+
+            FragmentTransaction ft = m_FragmentManager.beginTransaction();
         ft.replace(R.id.FrameLayoutMain, fragment);
         ft.commit();
 
@@ -53,8 +65,9 @@ public class NavigationManager {
         }
     }
 
-    public static void Initialize(FragmentManager fragmentManager) {
+    public static void Initialize(FragmentManager fragmentManager, ActionBar actionBar) {
         m_FragmentManager = fragmentManager;
         _pilhaDeNavegacao = new Stack<Fragment>();
+        m_ActionBar = actionBar;
     }
 }
