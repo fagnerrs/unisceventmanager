@@ -54,7 +54,7 @@ public class EventFragment extends Fragment {
 
 
 
-        ArrayList<EventoMO> _eventos =  new EventoMT().BuscaPessoas(null);
+        ArrayList<EventoMO> _eventos =  new EventoMT(this.getActivity()).BuscaPessoas(null);
 
         EventosAdapter _adapter = new EventosAdapter(this.getActivity(), _eventos);
 

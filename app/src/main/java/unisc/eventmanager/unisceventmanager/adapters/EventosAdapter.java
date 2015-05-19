@@ -92,7 +92,7 @@ public class EventosAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 long _id = Long.valueOf(v.getTag().toString());
-                new EventoMT().Delete(_id);
+                new EventoMT(m_Context).Delete(_id);
 
                 if (RefreshListViewListener != null)
                 {
