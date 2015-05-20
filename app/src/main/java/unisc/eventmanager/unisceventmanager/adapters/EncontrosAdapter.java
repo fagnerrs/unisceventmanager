@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import unisc.eventmanager.unisceventmanager.R;
 import unisc.eventmanager.unisceventmanager.classes.EncontroMO;
 import unisc.eventmanager.unisceventmanager.classes.EventoMO;
+import unisc.eventmanager.unisceventmanager.classes.NavigationManager;
+import unisc.eventmanager.unisceventmanager.fragments.IRefreshFragment;
+import unisc.eventmanager.unisceventmanager.fragments.MaintenanceEncontroFragment;
 import unisc.eventmanager.unisceventmanager.fragments.MaintenanceEventFragment;
 import unisc.eventmanager.unisceventmanager.methods.EventoMT;
 
@@ -24,15 +27,17 @@ import unisc.eventmanager.unisceventmanager.methods.EventoMT;
 public class EncontrosAdapter extends BaseAdapter {
 
     private final Activity m_Context;
+    private final ArrayList<Long> m_EncontrosDeletados;
     private LayoutInflater m_BaseInflater;
     private final ArrayList<EncontroMO> m_BaseList;
-    private IRefreshListView RefreshListViewListener;
+    private IRefreshFragment RefreshListViewListener;
 
-    public EncontrosAdapter(Activity context, ArrayList<EncontroMO> baseList)
+    public EncontrosAdapter(Activity context, ArrayList<EncontroMO> baseList, ArrayList<Long> encontrosDeletados)
     {
         m_BaseList = baseList;
         m_BaseInflater = LayoutInflater.from(context);
         m_Context = context;
+        m_EncontrosDeletados = encontrosDeletados;
     }
 
     @Override
@@ -73,15 +78,8 @@ public class EncontrosAdapter extends BaseAdapter {
                 {
                     if (_item.getID() == _id)
                     {
-                        Intent intent = new Intent(m_Context, MaintenanceEventFragment.class);
-                        intent.putExtra("id", _item.getID());
-                        /*intent.putExtra("nome", _item.getNome());
-                        intent.putExtra("endereco", _item.getEndereco());
-                        intent.putExtra("cidade", _item.getCidade());
-                        intent.putExtra("numero", String.valueOf(_item.getNumero()));
-                        intent.putExtra("telefone", _item.getTelefone()); */
-
-                        m_Context.startActivity(intent);
+                        MaintenanceEncontroFragment _mntEnc = new MaintenanceEncontroFragment(null, _item);
+                        NavigationManager.Navigate(_mntEnc);
 
                         break;
                     }
@@ -93,11 +91,25 @@ public class EncontrosAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 long _id = Long.valueOf(v.getTag().toString());
-                new EventoMT(m_Context).Delete(_id);
+
+                for (EncontroMO _item : m_BaseList) {
+                    if (_item.getID() == _id) {
+                        m_BaseList.remove(_item);
+
+
+                        break;
+                    }
+
+                }
+
+                if (_id > 0)
+                {
+                    m_EncontrosDeletados.add(_id);
+                }
 
                 if (RefreshListViewListener != null)
                 {
-                    RefreshListViewListener.Refresh();
+                    RefreshListViewListener.RefreshListView();
                 }
             }
         });
@@ -109,17 +121,12 @@ public class EncontrosAdapter extends BaseAdapter {
         return _view;
     }
 
-    public IRefreshListView getRefreshListViewListener() {
+    public IRefreshFragment getRefreshListViewListener() {
         return RefreshListViewListener;
     }
 
-    public void setRefreshListViewListener(IRefreshListView refreshListViewListener) {
+    public void setRefreshListViewListener(IRefreshFragment refreshListViewListener) {
         RefreshListViewListener = refreshListViewListener;
     }
 
-
-    public interface IRefreshListView
-    {
-        void Refresh();
-    }
 }

@@ -1,8 +1,5 @@
 package unisc.eventmanager.unisceventmanager.fragments;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -22,6 +19,9 @@ import unisc.eventmanager.unisceventmanager.methods.EventoMT;
 
 public class EventFragment extends Fragment {
 
+    private ListView m_ListView;
+    private EventosAdapter _adapter;
+    private ArrayList<EventoMO> m_Eventos;
 
     public EventFragment() {
         // Required empty public constructor
@@ -38,28 +38,41 @@ public class EventFragment extends Fragment {
 
         View _view = inflater.inflate(R.layout.fragment_event, container, false);
 
+        m_ListView = (ListView)_view.findViewById(R.id.fragment_event_ListView);
 
         Button _btnAdd = (Button)_view.findViewById(R.id.fragment_event_btnAdd);
         _btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                NavigationManager.Navigate(new MaintenanceEventFragment());
+            MaintenanceEventFragment _evFrag = new MaintenanceEventFragment(m_Eventos, null);
+            _evFrag.SetRefreshFragment(new IRefreshFragment() {
+                @Override
+                public void RefreshListView() {
+                    atualizaListaEventos();
+                }
+            });
 
+            NavigationManager.Navigate(_evFrag);
             }
         });
 
+        m_Eventos =  new EventoMT(this.getActivity()).BuscaEventos(null);
+        _adapter = new EventosAdapter(this.getActivity(), m_Eventos);
+        _adapter.setRefreshListViewListener(new IRefreshFragment() {
+            @Override
+            public void RefreshListView() {
+                atualizaListaEventos();
+            }
+        });
 
-        ListView _listView = (ListView)_view.findViewById(R.id.fragment_event_ListView);
+        m_ListView.setAdapter(_adapter);
 
-
-
-        ArrayList<EventoMO> _eventos =  new EventoMT(this.getActivity()).BuscaPessoas(null);
-
-        EventosAdapter _adapter = new EventosAdapter(this.getActivity(), _eventos);
-
-
-        // Inflate the layout for this fragment
         return _view;
+    }
+
+    private void atualizaListaEventos()
+    {
+        m_ListView.setAdapter(_adapter);
     }
 }

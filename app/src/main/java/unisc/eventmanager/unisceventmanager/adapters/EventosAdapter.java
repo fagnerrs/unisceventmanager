@@ -13,7 +13,10 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import unisc.eventmanager.unisceventmanager.R;
+import unisc.eventmanager.unisceventmanager.classes.EncontroMO;
 import unisc.eventmanager.unisceventmanager.classes.EventoMO;
+import unisc.eventmanager.unisceventmanager.classes.NavigationManager;
+import unisc.eventmanager.unisceventmanager.fragments.IRefreshFragment;
 import unisc.eventmanager.unisceventmanager.fragments.MaintenanceEventFragment;
 import unisc.eventmanager.unisceventmanager.methods.EventoMT;
 
@@ -26,7 +29,7 @@ public class EventosAdapter extends BaseAdapter {
     private final Activity m_Context;
     private LayoutInflater m_BaseInflater;
     private final ArrayList<EventoMO> m_BaseList;
-    private IRefreshListView RefreshListViewListener;
+    private IRefreshFragment RefreshListViewListener;
 
     public EventosAdapter(Activity context, ArrayList<EventoMO> baseList)
     {
@@ -66,37 +69,35 @@ public class EventosAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
 
-                long _id = Long.valueOf(v.getTag().toString());
+            long _id = Long.valueOf(v.getTag().toString());
 
-                for (EventoMO _item : m_BaseList)
-                {
-                    if (_item.getID() == _id)
-                    {
-                        Intent intent = new Intent(m_Context, MaintenanceEventFragment.class);
-                        intent.putExtra("id", _item.getID());
-                        /*intent.putExtra("nome", _item.getNome());
-                        intent.putExtra("endereco", _item.getEndereco());
-                        intent.putExtra("cidade", _item.getCidade());
-                        intent.putExtra("numero", String.valueOf(_item.getNumero()));
-                        intent.putExtra("telefone", _item.getTelefone()); */
+            EventoMO _eventMO = new EventoMT(m_Context).BuscaEventoById(_id);
+            MaintenanceEventFragment _mEvent = new MaintenanceEventFragment(null, _eventMO);
+            NavigationManager.Navigate(_mEvent);
 
-                        m_Context.startActivity(intent);
-
-                        break;
-                    }
-                }
             }
         });
 
         _btnRemove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 long _id = Long.valueOf(v.getTag().toString());
+
                 new EventoMT(m_Context).Delete(_id);
+
+                for (EventoMO _item : m_BaseList)
+                {
+                    if (_item.getID() == _id) {
+                        m_BaseList.remove(_item);
+
+                        break;
+                    }
+                }
 
                 if (RefreshListViewListener != null)
                 {
-                    RefreshListViewListener.Refresh();
+                    RefreshListViewListener.RefreshListView();
                 }
             }
         });
@@ -108,17 +109,12 @@ public class EventosAdapter extends BaseAdapter {
         return _view;
     }
 
-    public IRefreshListView getRefreshListViewListener() {
+    public IRefreshFragment getRefreshListViewListener() {
         return RefreshListViewListener;
     }
 
-    public void setRefreshListViewListener(IRefreshListView refreshListViewListener) {
+    public void setRefreshListViewListener(IRefreshFragment refreshListViewListener) {
         RefreshListViewListener = refreshListViewListener;
     }
 
-
-    public interface IRefreshListView
-    {
-        void Refresh();
-    }
 }
