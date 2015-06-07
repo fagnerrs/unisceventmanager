@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        android:layout_height="50dp"
+        android:id="@+id/presenca_adapter_IdEvento"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        android:layout_height="50dp"
+        android:id="@+id/presenca_adapter_IdMatricula"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        android:layout_height="50dp"
+        android:id="@+id/presenca_adapter_PessoaID"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_weight="3"
+        android:layout_gravity="center_vertical"
+        android:layout_height="50dp"
+        android:id="@+id/presenca_adapter_Nome"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_weight="3"
+        android:layout_gravity="center_vertical"
+        android:layout_height="50dp"
+        android:id="@+id/presenca_adapter_Email"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        android:layout_height="50dp"
+        android:id="@+id/presenca_adapter_DataChegada"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        android:layout_height="50dp"
+        android:id="@+id/presenca_adapter_DataSaida"/>
+
+</LinearLayout>

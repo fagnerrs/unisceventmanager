@@ -10,6 +10,7 @@ import java.util.Date;
 
 import unisc.eventmanager.unisceventmanager.classes.EncontroMO;
 import unisc.eventmanager.unisceventmanager.classes.EventoMO;
+import unisc.eventmanager.unisceventmanager.classes.PresencaMO;
 import unisc.eventmanager.unisceventmanager.database.DataBaseEngine;
 
 /**
@@ -230,5 +231,9 @@ public class EventoMT {
         m_DataBase.close();
 
         return _resp;
+    }
+
+    public ArrayList<PresencaMO> BuscaPresencas() {
+        return null;
     }
 }

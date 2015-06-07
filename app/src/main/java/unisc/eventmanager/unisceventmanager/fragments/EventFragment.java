@@ -1,14 +1,22 @@
 package unisc.eventmanager.unisceventmanager.fragments;
 
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.os.Environment;
+import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import unisc.eventmanager.unisceventmanager.R;
 import unisc.eventmanager.unisceventmanager.adapters.EventosAdapter;
@@ -74,5 +82,37 @@ public class EventFragment extends Fragment {
     private void atualizaListaEventos()
     {
         m_ListView.setAdapter(_adapter);
+    }
+
+    private void createCSVFile()
+    {
+        String columnString =   "\"PersonName\",\"Gender\",\"Street1\",\"postOffice\",\"Age\"";
+        String dataString   =   "\"" + "Fagner" +"\",\"" + "Male" + "\",\"" + "Henrique Schuster" + "\",\"" + "fagnerrs"+ "\",\"" + 29 + "\"";
+        String combinedString = columnString + "\n" + dataString;
+
+        File file   = null;
+        File root   = Environment.getExternalStorageDirectory();
+        if (root.canWrite()){
+            File dir    =   new File (root.getAbsolutePath() + "/PersonData");
+            dir.mkdirs();
+            file   =   new File(dir, "Data.csv");
+
+            FileOutputStream out   =   null;
+            try {
+                out = new FileOutputStream(file);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                out.write(combinedString.getBytes());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                out.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

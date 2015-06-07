@@ -41,7 +41,7 @@ public class NavigationManager {
         }
 
             FragmentTransaction ft = m_FragmentManager.beginTransaction();
-        ft.replace(R.id.FrameLayoutMain, fragment);
+        //ft.replace(R.id.FrameLayoutMain, fragment);
         ft.commit();
 
         _pilhaDeNavegacao.push(fragment);
