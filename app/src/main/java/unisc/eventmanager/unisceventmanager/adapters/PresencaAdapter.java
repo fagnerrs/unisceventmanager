@@ -37,7 +37,7 @@ public class PresencaAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return m_BaseList.size();
+        return (m_BaseList == null ? 0 : m_BaseList.size());
     }
 
     @Override

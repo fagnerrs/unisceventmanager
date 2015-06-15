@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class DataBaseEngine extends SQLiteOpenHelper
 {
     private static String m_DatabaseName = "enterprise.db";
-    private static int m_Version = 1;
+    private static int m_Version = 2;
 
     public DataBaseEngine(Context context) {
         super(context, m_DatabaseName, null, m_Version);

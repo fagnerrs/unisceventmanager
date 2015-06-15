@@ -67,14 +67,14 @@ public class EventFragment extends Fragment {
 
         m_Eventos =  new EventoMT(this.getActivity()).BuscaEventos(null);
         _adapter = new EventosAdapter(this.getActivity(), m_Eventos);
-        _adapter.setRefreshListViewListener(new IRefreshFragment() {
+       /* _adapter.setRefreshListViewListener(new IRefreshFragment() {
             @Override
             public void RefreshListView() {
                 atualizaListaEventos();
             }
-        });
+        });*/
 
-        m_ListView.setAdapter(_adapter);
+       // m_ListView.setAdapter(_adapter);
 
         return _view;
     }
