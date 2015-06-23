@@ -236,4 +236,35 @@ public class EventoMT {
     public ArrayList<PresencaMO> BuscaPresencas() {
         return null;
     }
+
+    public EncontroMO BuscaEncontroID(long id) {
+
+        EncontroMO _resp = new EncontroMO();
+
+        StringBuilder _querySQL = new StringBuilder().
+                append(" select id, ")
+                .append("  descricao,   ")
+                .append("  data_inicial,   ")
+                .append("  data_final   ")
+                .append(" from encontro ")
+                .append(" where id = ").append(String.valueOf(id));
+
+
+        m_DataBase = m_dbEngine.getReadableDatabase();
+
+        Cursor _cursorEvento = m_DataBase.
+                rawQuery(_querySQL.toString(), null);
+
+        while (_cursorEvento.moveToNext()) {
+
+            _resp.setID(_cursorEvento.getLong(0));
+            _resp.setDescricao(_cursorEvento.getString(1));
+            _resp.setDataInicial(new Date(_cursorEvento.getLong(2)));
+            _resp.setDataFinal(new Date(_cursorEvento.getLong(3)));
+
+            break;
+        }
+
+        return _resp;
+    }
 }

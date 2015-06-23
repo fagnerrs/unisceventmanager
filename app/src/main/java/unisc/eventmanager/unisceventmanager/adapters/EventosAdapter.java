@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import unisc.eventmanager.unisceventmanager.MaintenanceEncontroActivity;
+import unisc.eventmanager.unisceventmanager.MaintenanceEventActivity;
 import unisc.eventmanager.unisceventmanager.R;
 import unisc.eventmanager.unisceventmanager.classes.EncontroMO;
 import unisc.eventmanager.unisceventmanager.classes.EventoMO;
@@ -71,10 +73,9 @@ public class EventosAdapter extends BaseAdapter {
 
             long _id = Long.valueOf(v.getTag().toString());
 
-            EventoMO _eventMO = new EventoMT(m_Context).BuscaEventoById(_id);
-            MaintenanceEventFragment _mEvent = new MaintenanceEventFragment(null, _eventMO);
-            NavigationManager.Navigate(_mEvent);
-
+            Intent _int = new Intent(m_Context, MaintenanceEventActivity.class);
+            _int.putExtra("id", _id);
+            m_Context.startActivity(_int);
             }
         });
 

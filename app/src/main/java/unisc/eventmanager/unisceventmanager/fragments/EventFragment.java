@@ -1,6 +1,7 @@
 package unisc.eventmanager.unisceventmanager.fragments;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import unisc.eventmanager.unisceventmanager.MaintenanceEventActivity;
 import unisc.eventmanager.unisceventmanager.R;
 import unisc.eventmanager.unisceventmanager.adapters.EventosAdapter;
 import unisc.eventmanager.unisceventmanager.classes.EventoMO;
@@ -53,7 +55,7 @@ public class EventFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-            MaintenanceEventFragment _evFrag = new MaintenanceEventFragment(m_Eventos, null);
+            /*MaintenanceEventFragment _evFrag = new MaintenanceEventFragment(m_Eventos, null);
             _evFrag.SetRefreshFragment(new IRefreshFragment() {
                 @Override
                 public void RefreshListView() {
@@ -61,7 +63,11 @@ public class EventFragment extends Fragment {
                 }
             });
 
-            NavigationManager.Navigate(_evFrag);
+            NavigationManager.Navigate(_evFrag); */
+
+                Intent _int = new Intent(EventFragment.this.getActivity(), MaintenanceEventActivity.class);
+                EventFragment.this.startActivity(_int);
+
             }
         });
 
@@ -74,14 +80,22 @@ public class EventFragment extends Fragment {
             }
         });
 
-        m_ListView.setAdapter(_adapter);
+        //m_ListView.setAdapter(_adapter);
 
         return _view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        atualizaListaEventos();
+    }
+
     private void atualizaListaEventos()
     {
-        m_ListView.setAdapter(_adapter);
+        if (m_ListView != null) {
+            m_ListView.setAdapter(_adapter);
+        }
     }
 
     private void createCSVFile()

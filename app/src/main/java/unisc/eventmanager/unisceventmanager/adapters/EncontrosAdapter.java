@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import unisc.eventmanager.unisceventmanager.MaintenanceEncontroActivity;
 import unisc.eventmanager.unisceventmanager.R;
 import unisc.eventmanager.unisceventmanager.classes.EncontroMO;
 import unisc.eventmanager.unisceventmanager.classes.EventoMO;
@@ -59,11 +60,11 @@ public class EncontrosAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         View _view = m_BaseInflater.inflate(R.layout.eventos_adapter_view, null);
-        EncontroMO _rotaTO = m_BaseList.get(position);
+        EncontroMO _encontroTO = m_BaseList.get(position);
 
         TextView _tvNome = (TextView)_view.findViewById(R.id.adapter_evento_TvNome);
 
-        _tvNome.setText(_rotaTO.getDescricao());
+        _tvNome.setText(_encontroTO.getDescricao());
 
         ImageButton _btnUpdate = (ImageButton)_view.findViewById(R.id.adapter_pessoa_BtnAlterar);
         ImageButton _btnRemove = (ImageButton)_view.findViewById(R.id.adapter_pessoa_BtnRemover);
@@ -78,8 +79,13 @@ public class EncontrosAdapter extends BaseAdapter {
                 {
                     if (_item.getID() == _id)
                     {
-                        MaintenanceEncontroFragment _mntEnc = new MaintenanceEncontroFragment(null, _item);
-                        NavigationManager.Navigate(_mntEnc);
+                        /*MaintenanceEncontroFragment _mntEnc = new MaintenanceEncontroFragment(null, _item);
+                        NavigationManager.Navigate(_mntEnc); */
+
+                        Intent _int = new Intent(m_Context, MaintenanceEncontroActivity.class);
+                        _int.putExtra("id", _id);
+                        m_Context.startActivity(_int);
+
 
                         break;
                     }
@@ -102,21 +108,19 @@ public class EncontrosAdapter extends BaseAdapter {
 
                 }
 
-                if (_id > 0)
-                {
+                if (_id > 0) {
                     m_EncontrosDeletados.add(_id);
                 }
 
-                if (RefreshListViewListener != null)
-                {
+                if (RefreshListViewListener != null) {
                     RefreshListViewListener.RefreshListView();
                 }
             }
         });
 
 
-        _btnUpdate.setTag(_rotaTO.getID());
-        _btnRemove.setTag(_rotaTO.getID());
+        _btnUpdate.setTag(_encontroTO.getID());
+        _btnRemove.setTag(_encontroTO.getID());
 
         return _view;
     }
