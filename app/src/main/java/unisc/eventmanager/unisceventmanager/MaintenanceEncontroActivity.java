@@ -1,5 +1,6 @@
 package unisc.eventmanager.unisceventmanager;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -55,6 +56,13 @@ public class MaintenanceEncontroActivity extends Activity {
         m_EditTextDataAte = (EditText)this.findViewById(R.id.maintenance_encontro_EdtDataAte);
         m_ButtonSalvar = (Button)this.findViewById(R.id.maintenance_encontro_BtnSalvar);
         m_ButtonSalvar.setOnClickListener(salvarEncontro());
+
+        // Set up action bar.
+        final ActionBar actionBar = getActionBar();
+
+        // Specify that the Home button should show an "Up" caret, indicating that touching the
+        // button will take the user one step up in the application's hierarchy.
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         SimpleDateFormat _dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         SimpleDateFormat _timeFormat = new SimpleDateFormat("hh:mm");

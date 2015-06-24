@@ -1,5 +1,6 @@
 package unisc.eventmanager.unisceventmanager;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -58,6 +59,12 @@ public class MaintenanceEventActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maintenance_event);
 
+        // Set up action bar.
+        final ActionBar actionBar = getActionBar();
+
+        // Specify that the Home button should show an "Up" caret, indicating that touching the
+        // button will take the user one step up in the application's hierarchy.
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         m_EditTextDescricao = (EditText)this.findViewById(R.id.maintenance_event_EdtDescr);
         m_EditTextDataDe = (EditText)this.findViewById(R.id.maintenance_event_EdtDataDe);

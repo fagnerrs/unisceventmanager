@@ -10,6 +10,7 @@ import java.util.Date;
 
 import unisc.eventmanager.unisceventmanager.classes.EncontroMO;
 import unisc.eventmanager.unisceventmanager.classes.EventoMO;
+import unisc.eventmanager.unisceventmanager.classes.PessoaMO;
 import unisc.eventmanager.unisceventmanager.classes.PresencaMO;
 import unisc.eventmanager.unisceventmanager.database.DataBaseEngine;
 
@@ -234,7 +235,65 @@ public class EventoMT {
     }
 
     public ArrayList<PresencaMO> BuscaPresencas() {
-        return null;
+
+        ArrayList<PresencaMO> _resp = new ArrayList<>();
+
+        PessoaMO _pessoa = new PessoaMO();
+        _pessoa.setID(1);
+        _pessoa.setMatricula(56321);
+        _pessoa.setEmail("fagnerrs@gmail.com");
+        _pessoa.setNome("Fagner L Oliveira");
+
+        PessoaMO _pessoa1 = new PessoaMO();
+        _pessoa1.setID(1);
+        _pessoa1.setMatricula(33533);
+        _pessoa1.setEmail("carlosrs@gmail.com");
+        _pessoa1.setNome("Carlos João");
+
+        PessoaMO _pessoa2 = new PessoaMO();
+        _pessoa2.setID(1);
+        _pessoa2.setMatricula(85855);
+        _pessoa2.setEmail("felipers@gmail.com");
+        _pessoa2.setNome("Felipe Antonio");
+
+        EventoMO _evento = new EventoMO();
+        _evento.setDescricao("JAC - 2015");
+
+        EncontroMO _encontro = new EncontroMO();
+        _encontro.setDescricao("Segunda-Feira - Jogos e Mídia");
+
+
+        PresencaMO _presensa1 = new PresencaMO();
+        _presensa1.setID(1);
+        _presensa1.setDataChegada(new Date());
+        _presensa1.setDataSaida(new Date());
+        _presensa1.setEncontro(_encontro);
+        _presensa1.setEvento(_evento);
+        _presensa1.setPessoa(_pessoa);
+
+
+        PresencaMO _presensa2 = new PresencaMO();
+        _presensa2.setID(2);
+        _presensa2.setDataChegada(new Date());
+        _presensa2.setDataSaida(new Date());
+        _presensa2.setEncontro(_encontro);
+        _presensa2.setEvento(_evento);
+        _presensa2.setPessoa(_pessoa1);
+
+
+        PresencaMO _presensa3 = new PresencaMO();
+        _presensa3.setID(3);
+        _presensa3.setDataChegada(new Date());
+        _presensa3.setDataSaida(new Date());
+        _presensa3.setEncontro(_encontro);
+        _presensa3.setEvento(_evento);
+        _presensa3.setPessoa(_pessoa2);
+
+        _resp.add(_presensa1);
+        _resp.add(_presensa2);
+        _resp.add(_presensa3);
+
+        return _resp;
     }
 
     public EncontroMO BuscaEncontroID(long id) {

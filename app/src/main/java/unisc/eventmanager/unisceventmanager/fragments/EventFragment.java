@@ -97,36 +97,4 @@ public class EventFragment extends Fragment {
             m_ListView.setAdapter(_adapter);
         }
     }
-
-    private void createCSVFile()
-    {
-        String columnString =   "\"PersonName\",\"Gender\",\"Street1\",\"postOffice\",\"Age\"";
-        String dataString   =   "\"" + "Fagner" +"\",\"" + "Male" + "\",\"" + "Henrique Schuster" + "\",\"" + "fagnerrs"+ "\",\"" + 29 + "\"";
-        String combinedString = columnString + "\n" + dataString;
-
-        File file   = null;
-        File root   = Environment.getExternalStorageDirectory();
-        if (root.canWrite()){
-            File dir    =   new File (root.getAbsolutePath() + "/PersonData");
-            dir.mkdirs();
-            file   =   new File(dir, "Data.csv");
-
-            FileOutputStream out   =   null;
-            try {
-                out = new FileOutputStream(file);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            try {
-                out.write(combinedString.getBytes());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            try {
-                out.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
 }
