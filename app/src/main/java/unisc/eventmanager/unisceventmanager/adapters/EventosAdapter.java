@@ -1,15 +1,31 @@
 package unisc.eventmanager.unisceventmanager.adapters;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Point;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Environment;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import unisc.eventmanager.unisceventmanager.MaintenanceEncontroActivity;
@@ -22,6 +38,8 @@ import unisc.eventmanager.unisceventmanager.fragments.IRefreshFragment;
 import unisc.eventmanager.unisceventmanager.fragments.MaintenanceEventFragment;
 import unisc.eventmanager.unisceventmanager.methods.EventoMT;
 import unisc.eventmanager.unisceventmanager.methods.EventoWS;
+import unisc.eventmanager.unisceventmanager.qrcode.Contents;
+import unisc.eventmanager.unisceventmanager.qrcode.QrCodeEncoder;
 
 
 /**
@@ -33,6 +51,7 @@ public class EventosAdapter extends BaseAdapter {
     private LayoutInflater m_BaseInflater;
     private final ArrayList<EventoMO> m_BaseList;
     private IRefreshFragment RefreshListViewListener;
+    private ProgressDialog _progressD;
 
     public EventosAdapter(Activity context, ArrayList<EventoMO> baseList)
     {
@@ -68,6 +87,7 @@ public class EventosAdapter extends BaseAdapter {
         ImageButton _btnUpdate = (ImageButton)_view.findViewById(R.id.adapter_pessoa_BtnAlterar);
         ImageButton _btnRemove = (ImageButton)_view.findViewById(R.id.adapter_pessoa_BtnRemover);
 
+
         _btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,9 +116,6 @@ public class EventosAdapter extends BaseAdapter {
                         }
                     }
                 });
-
-
-
             }
         });
 

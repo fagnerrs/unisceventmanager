@@ -79,6 +79,12 @@ public class EventFragment extends Fragment {
             public void ListaEventosResult(ArrayList<EventoMO> eventos) {
 
                 _adapter = new EventosAdapter(EventFragment.this.getActivity(), eventos);
+                _adapter.setRefreshListViewListener(new IRefreshFragment() {
+                    @Override
+                    public void RefreshListView() {
+                        atualizaListaEventos();
+                    }
+                });
 
                 if (m_ListView != null) {
                     m_ListView.setAdapter(_adapter);
@@ -95,6 +101,8 @@ public class EventFragment extends Fragment {
     public void onResume() {
         super.onResume();
         atualizaListaEventos();
+
+
     }
 
     private void atualizaListaEventos() {

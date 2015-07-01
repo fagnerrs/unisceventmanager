@@ -11,12 +11,21 @@
         android:layout_height="50dp"
         android:id="@+id/adapter_encontro_TvNome"/>
 
+
+    <ImageButton
+        android:layout_width="50dp"
+        android:scaleType="fitXY"
+        android:layout_height="match_parent"
+        android:src="@drawable/qrcode"
+        android:background="#00FFFFFF"
+        android:id="@+id/adapter_encontro_BtnQrCode"/>
+
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:src="@drawable/change"
         android:background="#00FFFFFF"
-        android:id="@+id/adapter_pessoa_BtnAlterar"/>
+        android:id="@+id/adapter_encontro_BtnAlterar"/>
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -24,6 +33,6 @@
         android:layout_marginLeft="6dp"
         android:background="#00FFFFFF"
         android:src="@drawable/remove"
-        android:id="@+id/adapter_pessoa_BtnRemover"/>
+        android:id="@+id/adapter_encontro_BtnRemover"/>
 
 </LinearLayout>

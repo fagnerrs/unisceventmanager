@@ -26,6 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import unisc.eventmanager.unisceventmanager.classes.EncontroMO;
 import unisc.eventmanager.unisceventmanager.classes.EventoMO;
 import unisc.eventmanager.unisceventmanager.database.DataBaseEngine;
 
@@ -44,6 +45,99 @@ public class EventoWS {
     {
         m_Context = context;
         m_dbEngine = new DataBaseEngine(context);
+    }
+
+
+    public void ListaEncontros(long eventoID, final IEncontroResult result) {
+
+        StringBuilder _builderURL = new StringBuilder();
+
+        _builderURL.append("http://brunopdm.jossandro.com/encontro/?acao=lista_encontros");
+        _builderURL.append("&cod_evento=").append(eventoID);
+
+        Log.d("WBS", "URL: " + _builderURL.toString());
+
+        URL url = null;
+        URI uri = null;
+        try {
+
+            url = new URL(_builderURL.toString());
+            uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+        final URI finalUri = uri;
+        AsyncTask<Void, Void, Void> _task = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+
+                JsonArrayRequest req = new JsonArrayRequest(
+                        finalUri.toASCIIString(), new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+
+                        ArrayList<EncontroMO> _encontros = new ArrayList<EncontroMO>();
+
+                        //Fazendo PARSE do JSON
+                        String valores = "";
+                        try {
+                            for (int i = 0; i < response.length(); i++) {
+                                JSONObject jsonKeyValue = response.getJSONObject(i);
+                                EncontroMO _encontro = jsobjToListEncontro(jsonKeyValue);
+
+                                _encontros.add(_encontro);
+                            }
+
+                            result.Result(_encontros);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Log.d("WBS", _encontros.toString());
+                    }
+
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                        error.printStackTrace();
+                    }
+                });
+
+                RequestQueue queue = Volley.newRequestQueue(m_Context);
+                queue.add(req);
+
+                return null;
+            }
+        };
+
+        _task.execute();
+    }
+
+    private EncontroMO jsobjToListEncontro(JSONObject jsonKeyValue) {
+
+        EncontroMO _encontro = new EncontroMO();
+
+        try{
+            _encontro.setID(jsonKeyValue.getInt("cod_encontro"));
+            _encontro.setDescricao(jsonKeyValue.getString("nome_encontro"));
+
+            try{
+                _encontro.setDataInicial(parseDateTime((jsonKeyValue.getString("data_encontro"))));
+
+            }
+            catch (Exception ex){
+
+            }
+        }
+        catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        return _encontro;
     }
 
     public void ListaEventos() {
@@ -184,31 +278,26 @@ public class EventoWS {
                         Toast.makeText(m_Context, "Problema ao buscar dados da web", Toast.LENGTH_SHORT).show();
                         Log.d("WBS", error.toString());
                     }
-                }
-                );
-
+                });
 
                 RequestQueue queue = Volley.newRequestQueue(m_Context);
                 queue.add(req);
-
 
                 return null;
             }
         };
 
         _task.execute();
-
-
     }
 
-    public void Atualizar(EventoMO evento){
+    public void Atualizar(EventoMO evento, final IEventoResult result){
 
         DateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
 
         StringBuilder _builderURL = new StringBuilder();
 
         _builderURL.append(BASE_URL);
-        _builderURL.append("/evento/?acao=update");
+        _builderURL.append("evento/?acao=update");
         _builderURL.append("&cod_evento=").append(evento.getID());
         _builderURL.append("&nome_evento=").append(evento.getDescricao());
 
@@ -246,14 +335,16 @@ public class EventoWS {
                     @Override
                     public void onResponse(JSONArray response) {
 
+                        result.ListaEventosResult(null);
+
                     }
 
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // TODO Auto-generated method stub
-                        Toast.makeText(m_Context, "Problema ao buscar dados da web", Toast.LENGTH_SHORT).show();
-                        Log.d("WBS", error.toString());
+                       error.printStackTrace();
+
+                        result.ListaEventosResult(null);
                     }
                 }
                 );
@@ -277,7 +368,7 @@ public class EventoWS {
         StringBuilder _builderURL = new StringBuilder();
 
         _builderURL.append(BASE_URL);
-        _builderURL.append("/evento/?acao=excluir&");
+        _builderURL.append("evento/?acao=excluir");
         _builderURL.append("&cod_evento=").append(eventoID);
 
         Log.d("WBS", "URL: " + _builderURL.toString());
@@ -304,16 +395,16 @@ public class EventoWS {
                         finalUri.toASCIIString(), new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
+
                         result.ListaEventosResult(null);
                     }
 
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // TODO Auto-generated method stub
-                        Toast.makeText(m_Context, "Problema ao buscar dados da web", Toast.LENGTH_SHORT).show();
-                        Log.d("WBS", error.toString());
-                    }
+
+                        result.ListaEventosResult(null);
+                        }
                 }
                 );
 
@@ -329,6 +420,65 @@ public class EventoWS {
         _task.execute();
     }
 
+    public void InserirEncontro(final long eventoID, final EncontroMO encontro, final IEventoResult result){
+
+        AsyncTask<Void, Void, Void> _task = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                StringBuilder _builderURL = new StringBuilder();
+
+                DateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
+                DateFormat fmtHora = new SimpleDateFormat("hh:mm");
+
+                _builderURL.append(BASE_URL);
+                _builderURL.append("http://brunopdm.jossandro.com/encontro/?acao=inserir");
+                _builderURL.append("&nome_encontro=").append(encontro.getDescricao());
+                _builderURL.append("&data_encontro=").append(fmt.format(encontro.getDataInicial()));
+                _builderURL.append("&hora_inicio=").append(fmtHora.format(encontro.getDataInicial()));
+                _builderURL.append("&hora_fim=").append(fmtHora.format(encontro.getDataFinal()));
+                _builderURL.append("&cod_evento=").append(eventoID);
+
+                Log.d("WBS","URL: "+_builderURL.toString());
+
+                URL url= null;
+                URI uri = null;
+                try {
+
+                    url = new URL(_builderURL.toString());
+                    uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+
+                JsonArrayRequest req = new JsonArrayRequest(
+
+                        uri.toASCIIString(), new Response.Listener<JSONArray>() {
+
+                    @Override
+                    public void onResponse(JSONArray response){
+
+
+                    }
+
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                       error.printStackTrace();
+                    }
+                }
+                );
+
+                RequestQueue queue = Volley.newRequestQueue(m_Context);
+                queue.add(req);
+
+                return null;
+            }
+        };
+
+        _task.execute();
+    }
 
     public void Salvar(final EventoMO p, final IEventoResult result){
 
@@ -364,6 +514,20 @@ public class EventoWS {
 
                     @Override
                     public void onResponse(JSONArray response){
+
+                        try {
+                            for (int i = 0; i < response.length(); i++) {
+
+                                JSONObject jsonKeyValue = response.getJSONObject(i);
+
+                                p.setID(jsonKeyValue.getLong("cod_evento"));
+
+                                break;
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
                         result.ListaEventosResult(null);
 
@@ -418,17 +582,15 @@ public class EventoWS {
         if (dateString == null || dateString.equals(""))
             return null;
 
-        DateFormat fmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
-        if (dateString.contains("T")) dateString = dateString.replace('T', ' ');
-        if (dateString.contains("Z")) dateString = dateString.replace("Z", "+0000");
-        else
-            dateString = dateString.substring(0, dateString.lastIndexOf(':')) + dateString.substring(dateString.lastIndexOf(':')+1);
+        DateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
+
         try {
             return fmt.parse(dateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
-        catch (ParseException e) {
-            return null;
-        }
+
+        return null;
     }
 
     private EventoMO jsobjToListEvento(JSONObject jsonKeyValue) {
@@ -460,6 +622,10 @@ public class EventoWS {
 
     public interface IGetEventoResult{
         void Result(EventoMO evento);
+    }
+
+    public interface IEncontroResult{
+        void Result(ArrayList<EncontroMO> encontros);
     }
 
 }

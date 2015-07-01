@@ -12,14 +12,14 @@
         android:id="@+id/adapter_evento_TvNome"/>
 
     <ImageButton
-        android:layout_width="wrap_content"
+        android:layout_width="50dp"
         android:layout_height="match_parent"
         android:src="@drawable/change"
         android:background="#00FFFFFF"
         android:id="@+id/adapter_pessoa_BtnAlterar"/>
 
     <ImageButton
-        android:layout_width="wrap_content"
+        android:layout_width="50dp"
         android:layout_height="match_parent"
         android:layout_marginLeft="6dp"
         android:background="#00FFFFFF"

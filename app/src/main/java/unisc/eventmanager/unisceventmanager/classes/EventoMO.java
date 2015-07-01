@@ -24,6 +24,10 @@ public class EventoMO {
         return Encontros;
     }
 
+    public void SetEncontros(ArrayList<EncontroMO> encontros){
+        this.Encontros = encontros;
+    }
+
     public long getID() {
         return ID;
     }

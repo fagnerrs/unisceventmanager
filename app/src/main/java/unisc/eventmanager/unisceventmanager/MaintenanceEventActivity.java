@@ -103,14 +103,15 @@ public class MaintenanceEventActivity extends Activity {
 
                     }
 
-                    m_encontroAdapter = new EncontrosAdapter(MaintenanceEventActivity.this, m_Evento.GetEncontros(), m_EncontrosDeletados);
-                    m_encontroAdapter.setRefreshListViewListener(new IRefreshFragment() {
+                    new EventoWS(MaintenanceEventActivity.this).ListaEncontros(m_Evento.getID(), new EventoWS.IEncontroResult() {
                         @Override
-                        public void RefreshListView() {
+                        public void Result(ArrayList<EncontroMO> encontros) {
+
+                           m_Evento.SetEncontros(encontros);
+                            
                             atualizaListagemEncontros();
                         }
                     });
-
                 }
             });
         }
@@ -133,15 +134,10 @@ public class MaintenanceEventActivity extends Activity {
                 m_EditTextHoraAte.setText(_timeFormat.format(m_Evento.getDataFinal()));
             } catch (Exception ex) {
 
+
             }
 
-            m_encontroAdapter = new EncontrosAdapter(MaintenanceEventActivity.this, m_Evento.GetEncontros(), m_EncontrosDeletados);
-            m_encontroAdapter.setRefreshListViewListener(new IRefreshFragment() {
-                @Override
-                public void RefreshListView() {
-                    atualizaListagemEncontros();
-                }
-            });
+            atualizaListagemEncontros();
         }
 
 
@@ -155,7 +151,17 @@ public class MaintenanceEventActivity extends Activity {
 
     private void atualizaListagemEncontros() {
 
-        if (m_ListViewEncontros != null) {
+        if (m_ListViewEncontros != null && m_Evento!= null ) {
+
+            m_encontroAdapter = null;
+            m_encontroAdapter = new EncontrosAdapter(MaintenanceEventActivity.this, m_Evento.GetEncontros(), m_EncontrosDeletados);
+            m_encontroAdapter.setRefreshListViewListener(new IRefreshFragment() {
+                @Override
+                public void RefreshListView() {
+                    atualizaListagemEncontros();
+                }
+            });
+
             m_ListViewEncontros.setAdapter(m_encontroAdapter);
         }
     }
@@ -244,13 +250,34 @@ public class MaintenanceEventActivity extends Activity {
                                 @Override
                                 public void ListaEventosResult(ArrayList<EventoMO> eventos) {
 
+
+                                    for (EncontroMO _encontro : m_Evento.GetEncontros() ){
+
+                                        new EventoWS(MaintenanceEventActivity.this).InserirEncontro(m_Evento.getID(), _encontro, null);
+
+                                    }
+
                                     MaintenanceEventActivity.this.onBackPressed();
                                 }
                             });
                         }
                         else{
                             //m_EncontrosDeletados
-                            new EventoWS(MaintenanceEventActivity.this).Atualizar(m_Evento);
+                            new EventoWS(MaintenanceEventActivity.this).Atualizar(m_Evento, new EventoWS.IEventoResult() {
+                                @Override
+                                public void ListaEventosResult(ArrayList<EventoMO> eventos) {
+
+
+                                    for (EncontroMO _encontro : m_Evento.GetEncontros() ){
+
+                                        new EventoWS(MaintenanceEventActivity.this).InserirEncontro(m_Evento.getID(), _encontro, null);
+
+                                    }
+
+
+                                    MaintenanceEventActivity.this.onBackPressed();
+                                }
+                            });
                         }
 
                         if (m_Eventos != null){

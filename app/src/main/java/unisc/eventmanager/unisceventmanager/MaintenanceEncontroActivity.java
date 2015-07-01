@@ -166,6 +166,9 @@ public class MaintenanceEncontroActivity extends Activity {
 
                             m_Encontro.setDataFinal(_dataDe);
                             m_Encontro.setDataInicial(_dataAte);
+
+
+
                         }
                         catch (Exception ex)
                         {
@@ -179,8 +182,6 @@ public class MaintenanceEncontroActivity extends Activity {
                 {
                     MaintenanceEventActivity.m_Evento.GetEncontros().add(m_Encontro);
                 }
-
-                onRefreshListView();
 
                 MaintenanceEncontroActivity.this.onBackPressed();
             }
