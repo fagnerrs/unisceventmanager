@@ -23,6 +23,7 @@ import unisc.eventmanager.unisceventmanager.classes.NavigationManager;
 import unisc.eventmanager.unisceventmanager.fragments.IRefreshFragment;
 import unisc.eventmanager.unisceventmanager.fragments.MaintenanceEncontroFragment;
 import unisc.eventmanager.unisceventmanager.methods.EventoMT;
+import unisc.eventmanager.unisceventmanager.methods.EventoWS;
 
 
 public class MaintenanceEventActivity extends Activity {
@@ -78,42 +79,70 @@ public class MaintenanceEventActivity extends Activity {
         m_ButtonEncontro.setOnClickListener(novoEncontro());
         m_ButtonSalvar.setOnClickListener(salvarEvento());
 
-        SimpleDateFormat _dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        SimpleDateFormat _timeFormat = new SimpleDateFormat("hh:mm");
+        final SimpleDateFormat _dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        final SimpleDateFormat _timeFormat = new SimpleDateFormat("hh:mm");
 
 
         long _id = this.getIntent().getLongExtra("id", 0);
         if (_id > 0) {
-            m_Evento = new EventoMT(this).BuscaEventoById(_id);
+            new EventoWS(this).RetornaEvento(_id, new EventoWS.IGetEventoResult() {
+                @Override
+                public void Result(EventoMO evento) {
+
+                    m_Evento = evento;
+
+                    m_EditTextDescricao.setText(m_Evento.getDescricao());
+
+                    try {
+                        m_EditTextDataDe.setText(_dateFormat.format(m_Evento.getDataInicial()));
+                        m_EditTextDataAte.setText(_dateFormat.format(m_Evento.getDataFinal()));
+
+                        m_EditTextHoraDe.setText(_timeFormat.format(m_Evento.getDataInicial()));
+                        m_EditTextHoraAte.setText(_timeFormat.format(m_Evento.getDataFinal()));
+                    } catch (Exception ex) {
+
+                    }
+
+                    m_encontroAdapter = new EncontrosAdapter(MaintenanceEventActivity.this, m_Evento.GetEncontros(), m_EncontrosDeletados);
+                    m_encontroAdapter.setRefreshListViewListener(new IRefreshFragment() {
+                        @Override
+                        public void RefreshListView() {
+                            atualizaListagemEncontros();
+                        }
+                    });
+
+                }
+            });
         }
+        else {
 
-        if (m_Evento == null) {
-            m_Evento = new EventoMO();
+            if (m_Evento == null) {
+                m_Evento = new EventoMO();
 
-            m_Evento.setDataInicial(new Date());
-            m_Evento.setDataFinal(new Date());
-        }
-
-        m_EditTextDescricao.setText(m_Evento.getDescricao());
-
-        try {
-            m_EditTextDataDe.setText(_dateFormat.format(m_Evento.getDataInicial()));
-            m_EditTextDataAte.setText(_dateFormat.format(m_Evento.getDataFinal()));
-
-            m_EditTextHoraDe.setText(_timeFormat.format(m_Evento.getDataInicial()));
-            m_EditTextHoraAte.setText(_timeFormat.format(m_Evento.getDataFinal()));
-        }catch (Exception ex)
-        {
-
-        }
-
-        m_encontroAdapter = new EncontrosAdapter(MaintenanceEventActivity.this, m_Evento.GetEncontros(), m_EncontrosDeletados);
-        m_encontroAdapter.setRefreshListViewListener(new IRefreshFragment() {
-            @Override
-            public void RefreshListView() {
-                atualizaListagemEncontros();
+                m_Evento.setDataInicial(new Date());
+                m_Evento.setDataFinal(new Date());
             }
-        });
+
+            m_EditTextDescricao.setText(m_Evento.getDescricao());
+
+            try {
+                m_EditTextDataDe.setText(_dateFormat.format(m_Evento.getDataInicial()));
+                m_EditTextDataAte.setText(_dateFormat.format(m_Evento.getDataFinal()));
+
+                m_EditTextHoraDe.setText(_timeFormat.format(m_Evento.getDataInicial()));
+                m_EditTextHoraAte.setText(_timeFormat.format(m_Evento.getDataFinal()));
+            } catch (Exception ex) {
+
+            }
+
+            m_encontroAdapter = new EncontrosAdapter(MaintenanceEventActivity.this, m_Evento.GetEncontros(), m_EncontrosDeletados);
+            m_encontroAdapter.setRefreshListViewListener(new IRefreshFragment() {
+                @Override
+                public void RefreshListView() {
+                    atualizaListagemEncontros();
+                }
+            });
+        }
 
 
     }
@@ -211,19 +240,24 @@ public class MaintenanceEventActivity extends Activity {
                         }
 
                         if (m_Evento.getID()==0) {
-                            new EventoMT(MaintenanceEventActivity.this).Salvar(m_Evento);
+                            new EventoWS(MaintenanceEventActivity.this).Salvar(m_Evento, new EventoWS.IEventoResult() {
+                                @Override
+                                public void ListaEventosResult(ArrayList<EventoMO> eventos) {
+
+                                    MaintenanceEventActivity.this.onBackPressed();
+                                }
+                            });
                         }
                         else{
-                            new EventoMT(MaintenanceEventActivity.this).Update(m_Evento, m_EncontrosDeletados);
+                            //m_EncontrosDeletados
+                            new EventoWS(MaintenanceEventActivity.this).Atualizar(m_Evento);
                         }
 
                         if (m_Eventos != null){
                             m_Eventos.add(m_Evento);
                         }
 
-                        onRefreshFragment();
 
-                        MaintenanceEventActivity.this.onBackPressed();
                     }
                 }
             }
@@ -249,6 +283,10 @@ public class MaintenanceEventActivity extends Activity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+        else
+        {
+            this.onBackPressed();
         }
 
         return super.onOptionsItemSelected(item);

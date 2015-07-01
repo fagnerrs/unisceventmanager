@@ -25,13 +25,14 @@ import unisc.eventmanager.unisceventmanager.adapters.EventosAdapter;
 import unisc.eventmanager.unisceventmanager.classes.EventoMO;
 import unisc.eventmanager.unisceventmanager.classes.NavigationManager;
 import unisc.eventmanager.unisceventmanager.methods.EventoMT;
+import unisc.eventmanager.unisceventmanager.methods.EventoWS;
 
 
 public class EventFragment extends Fragment {
 
     private ListView m_ListView;
     private EventosAdapter _adapter;
-    private ArrayList<EventoMO> m_Eventos;
+    private EventoWS m_EventoWS;
 
     public EventFragment() {
         // Required empty public constructor
@@ -71,12 +72,17 @@ public class EventFragment extends Fragment {
             }
         });
 
-        m_Eventos =  new EventoMT(this.getActivity()).BuscaEventos(null);
-        _adapter = new EventosAdapter(this.getActivity(), m_Eventos);
-        _adapter.setRefreshListViewListener(new IRefreshFragment() {
+
+        m_EventoWS = new EventoWS(this.getActivity());
+        m_EventoWS.setEventoResult(new EventoWS.IEventoResult() {
             @Override
-            public void RefreshListView() {
-                atualizaListaEventos();
+            public void ListaEventosResult(ArrayList<EventoMO> eventos) {
+
+                _adapter = new EventosAdapter(EventFragment.this.getActivity(), eventos);
+
+                if (m_ListView != null) {
+                    m_ListView.setAdapter(_adapter);
+                }
             }
         });
 
@@ -91,10 +97,17 @@ public class EventFragment extends Fragment {
         atualizaListaEventos();
     }
 
-    private void atualizaListaEventos()
-    {
-        if (m_ListView != null) {
-            m_ListView.setAdapter(_adapter);
+    private void atualizaListaEventos() {
+        if (m_EventoWS != null){
+            m_EventoWS.ListaEventos();
         }
+    }
+
+    public EventoWS getM_EventoWS() {
+        return m_EventoWS;
+    }
+
+    public void setM_EventoWS(EventoWS m_EventoWS) {
+        this.m_EventoWS = m_EventoWS;
     }
 }

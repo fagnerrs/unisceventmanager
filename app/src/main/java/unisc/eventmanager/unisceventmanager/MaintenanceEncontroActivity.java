@@ -116,6 +116,10 @@ public class MaintenanceEncontroActivity extends Activity {
         if (id == R.id.action_settings) {
             return true;
         }
+        else
+        {
+            this.onBackPressed();
+        }
 
         return super.onOptionsItemSelected(item);
     }

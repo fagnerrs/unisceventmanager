@@ -21,6 +21,7 @@ import unisc.eventmanager.unisceventmanager.classes.NavigationManager;
 import unisc.eventmanager.unisceventmanager.fragments.IRefreshFragment;
 import unisc.eventmanager.unisceventmanager.fragments.MaintenanceEventFragment;
 import unisc.eventmanager.unisceventmanager.methods.EventoMT;
+import unisc.eventmanager.unisceventmanager.methods.EventoWS;
 
 
 /**
@@ -42,7 +43,7 @@ public class EventosAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return m_BaseList.size();
+        return m_BaseList == null?0: m_BaseList.size();
     }
 
     @Override
@@ -85,21 +86,19 @@ public class EventosAdapter extends BaseAdapter {
 
                 long _id = Long.valueOf(v.getTag().toString());
 
-                new EventoMT(m_Context).Delete(_id);
+                new EventoWS(m_Context).Remover(_id, new EventoWS.IEventoResult() {
+                    @Override
+                    public void ListaEventosResult(ArrayList<EventoMO> eventos) {
 
-                for (EventoMO _item : m_BaseList)
-                {
-                    if (_item.getID() == _id) {
-                        m_BaseList.remove(_item);
-
-                        break;
+                        if (RefreshListViewListener != null)
+                        {
+                            RefreshListViewListener.RefreshListView();
+                        }
                     }
-                }
+                });
 
-                if (RefreshListViewListener != null)
-                {
-                    RefreshListViewListener.RefreshListView();
-                }
+
+
             }
         });
 
