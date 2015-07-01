@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,10 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import unisc.eventmanager.unisceventmanager.R;
-import unisc.eventmanager.unisceventmanager.adapters.EventosAdapter;
 import unisc.eventmanager.unisceventmanager.adapters.PresencaAdapter;
-import unisc.eventmanager.unisceventmanager.classes.EventoMO;
-import unisc.eventmanager.unisceventmanager.classes.NavigationManager;
 import unisc.eventmanager.unisceventmanager.classes.PresencaMO;
 import unisc.eventmanager.unisceventmanager.methods.EventoMT;
 
@@ -47,32 +43,26 @@ public class PresencaFragment extends Fragment {
 
         View _view = inflater.inflate(R.layout.fragment_presenca, container, false);
 
-        m_ListView = (ListView)_view.findViewById(R.id.fragment_presenca_ListView);
-
-        Button _btnAdd = (Button)_view.findViewById(R.id.fragment_presenca_btnExp);
-        _btnAdd.setOnClickListener(new View.OnClickListener() {
+        Button _btnExpPresencas = (Button)_view.findViewById(R.id.fragment_presenca_btnExpPresencas);
+        _btnExpPresencas.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                createCSVFile();
+                createAndExportCSVPresencas();
             }
         });
 
-        m_Eventos =  new EventoMT(this.getActivity()).BuscaPresencas();
-        _adapter = new PresencaAdapter(this.getActivity(), m_Eventos);
-        _adapter.setRefreshListViewListener(new IRefreshFragment() {
+        Button _btnExpFaltas = (Button)_view.findViewById(R.id.fragment_presenca_btnExpFaltas);
+        _btnExpFaltas.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void RefreshListView() {
-
+            public void onClick(View view) {
+                createAndExportCSVPresencas();
             }
         });
-
-        m_ListView.setAdapter(_adapter);
-
 
         return _view;
     }
 
-    private void createCSVFile()
+    private void createAndExportCSVPresencas()
     {
         String columnString =   "\"Evento ID\",\"Matrícula\",\"Pessoa ID\",\"Nome\",\"Email\",\"Data Chegada\",\"Data Saída\"";
         //String dataString   =   "\"" + "Fagner" +"\",\"" + "Male" + "\",\"" + "Henrique Schuster" + "\",\"" + "fagnerrs"+ "\",\"" + 29 + "\"";

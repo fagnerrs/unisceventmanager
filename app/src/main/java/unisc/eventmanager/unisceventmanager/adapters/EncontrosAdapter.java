@@ -45,7 +45,6 @@ public class EncontrosAdapter extends BaseAdapter {
     private LayoutInflater m_BaseInflater;
     private final ArrayList<EncontroMO> m_BaseList;
     private IRefreshFragment RefreshListViewListener;
-    private ProgressDialog _progressDialog;
     private File m_FileImage1=null;
     private File m_FileImage2=null;
 
@@ -91,22 +90,22 @@ public class EncontrosAdapter extends BaseAdapter {
             _btnQrCode.setVisibility(View.GONE);
         }
 
+        _btnQrCode.setTag(String.valueOf(_encontroTO.getID())+"/"+ _encontroTO.getDescricao()+"/"+"E");
+
         _btnQrCode.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
 
-                AsyncTask _task = new AsyncTask() {
-                    @Override
-                    protected Object doInBackground(Object[] params) {
-                        m_FileImage1 = generateQrCode(String.valueOf(_encontroTO.getID())+"/"+ _encontroTO.getDescricao()+"/"+"E");
+
+
+                        m_FileImage1 = generateQrCode(v.getTag().toString());
 
                         sendEmail();
 
-                        return null;
-                    }
-                };
 
-                _task.execute();
+
+
+
             }
         });
 
@@ -142,6 +141,7 @@ public class EncontrosAdapter extends BaseAdapter {
 
                 for (EncontroMO _item : m_BaseList) {
                     if (_item.getID() == _id) {
+
                         m_BaseList.remove(_item);
 
 
@@ -221,14 +221,6 @@ public class EncontrosAdapter extends BaseAdapter {
 
 // remember close de FileOutput
                 fo.close();
-
-                m_Context.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        _progressDialog.cancel();
-                    }
-                });
-
             }
             catch (IOException e) {
                 e.printStackTrace();
@@ -239,28 +231,15 @@ public class EncontrosAdapter extends BaseAdapter {
         }
 
 
-
-        _progressDialog = new ProgressDialog(m_Context);
-
-        m_Context.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                _progressDialog.setMessage("Gerando QrCode...");
-                _progressDialog.show();
-            }
-        });
-
-
         return m_FileImage;
     }
 
     private void sendEmail()
     {
-
         Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
         emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, "fagnerrs@gmail.com");
-        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "dear fagner");
-        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "aula 05");
+        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "QrCode Trabalho Prog. Disp. Móveis ");
         emailIntent.setType("application/image");
 
         if (m_FileImage1 != null) {

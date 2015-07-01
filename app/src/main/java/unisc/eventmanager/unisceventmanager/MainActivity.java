@@ -149,7 +149,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                     return "Eventos";
 
                 case 1:
-                    return "Presenças";
+                    return "Relatórios";
 
                 default:
                     return "";

@@ -35,7 +35,6 @@ import unisc.eventmanager.unisceventmanager.classes.EncontroMO;
 import unisc.eventmanager.unisceventmanager.classes.EventoMO;
 import unisc.eventmanager.unisceventmanager.classes.NavigationManager;
 import unisc.eventmanager.unisceventmanager.fragments.IRefreshFragment;
-import unisc.eventmanager.unisceventmanager.fragments.MaintenanceEventFragment;
 import unisc.eventmanager.unisceventmanager.methods.EventoMT;
 import unisc.eventmanager.unisceventmanager.methods.EventoWS;
 import unisc.eventmanager.unisceventmanager.qrcode.Contents;

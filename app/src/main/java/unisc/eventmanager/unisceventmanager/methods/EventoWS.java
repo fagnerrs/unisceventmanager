@@ -20,6 +20,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -47,6 +48,132 @@ public class EventoWS {
         m_dbEngine = new DataBaseEngine(context);
     }
 
+    public void ExcluirEncontro(final long encontroID){
+
+        AsyncTask<Void, Void, Void> _task = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                StringBuilder _builderURL = new StringBuilder();
+
+                _builderURL.append("http://brunopdm.jossandro.com/encontro/?acao=excluir");
+                _builderURL.append("&cod_encontro=").append(encontroID);
+
+                Log.d("WBS","URL: "+_builderURL.toString());
+
+                URL url= null;
+                URI uri = null;
+                try {
+
+                    url = new URL(_builderURL.toString());
+                    uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+
+                JsonArrayRequest req = new JsonArrayRequest(
+
+                        uri.toASCIIString(), new Response.Listener<JSONArray>() {
+
+                    @Override
+                    public void onResponse(JSONArray response) {
+                    }
+
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                }
+                );
+
+                RequestQueue queue = Volley.newRequestQueue(m_Context);
+                queue.add(req);
+
+                return null;
+            }
+        };
+
+        _task.execute();
+    }
+
+
+    public void AtualizarEncontro(final long eventoID, final EncontroMO encontro, final IEventoResult result){
+
+        AsyncTask<Void, Void, Void> _task = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                StringBuilder _builderURL = new StringBuilder();
+
+                DateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
+                DateFormat fmtHora = new SimpleDateFormat("hh:mm");
+
+                _builderURL.append("http://brunopdm.jossandro.com/encontro/?acao=alterar");
+                _builderURL.append("&cod_encontro=").append(encontro.getID());
+                _builderURL.append("&nome_encontro=").append(encontro.getDescricao());
+
+                try {
+                    if (encontro.getDataInicial() != null){
+                        _builderURL.append("&data_encontro=").append(fmt.format(encontro.getDataInicial()));
+                    }
+
+                    if (encontro.getDataInicial() != null){
+                        _builderURL.append("&hora_inicio=").append(fmtHora.format(encontro.getDataInicial()));
+                    }
+
+                    if (encontro.getDataFinal() != null){
+                        _builderURL.append("&hora_fim=").append(fmtHora.format(encontro.getDataFinal()));
+                    }
+                }
+                catch (Exception ex){
+
+                }
+
+
+                _builderURL.append("&cod_evento=").append(eventoID);
+
+                Log.d("WBS","URL: "+_builderURL.toString());
+
+                URL url= null;
+                URI uri = null;
+                try {
+
+                    url = new URL(_builderURL.toString());
+                    uri = new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+
+                JsonArrayRequest req = new JsonArrayRequest(
+
+                        uri.toASCIIString(), new Response.Listener<JSONArray>() {
+
+                    @Override
+                    public void onResponse(JSONArray response){
+
+
+                    }
+
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                }
+                );
+
+                RequestQueue queue = Volley.newRequestQueue(m_Context);
+                queue.add(req);
+
+                return null;
+            }
+        };
+
+        _task.execute();
+    }
 
     public void ListaEncontros(long eventoID, final IEncontroResult result) {
 
@@ -126,7 +253,28 @@ public class EventoWS {
             _encontro.setDescricao(jsonKeyValue.getString("nome_encontro"));
 
             try{
-                _encontro.setDataInicial(parseDateTime((jsonKeyValue.getString("data_encontro"))));
+
+                String _dataEncontro = jsonKeyValue.getString("data_encontro");
+
+                if (!_dataEncontro.equals("")) {
+
+                    String _horaDe = jsonKeyValue.getString("hora_inicio");
+                    if (!_horaDe.equals("")) {
+                        Date _dataHoraDe = parseDateTime(_dataEncontro+" " + _horaDe);
+
+                        _encontro.setDataInicial(_dataHoraDe);
+                    }
+
+                    String _horaAte = jsonKeyValue.getString("hora_fim");
+                    if (!_horaAte.equals("")) {
+                        Date _dataHoraAte = parseDateTime(_dataEncontro+" " + _horaAte);
+
+                        _encontro.setDataFinal(_dataHoraAte);
+                    }
+
+
+
+                }
 
             }
             catch (Exception ex){
@@ -430,12 +578,27 @@ public class EventoWS {
                 DateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
                 DateFormat fmtHora = new SimpleDateFormat("hh:mm");
 
-                _builderURL.append(BASE_URL);
                 _builderURL.append("http://brunopdm.jossandro.com/encontro/?acao=inserir");
                 _builderURL.append("&nome_encontro=").append(encontro.getDescricao());
-                _builderURL.append("&data_encontro=").append(fmt.format(encontro.getDataInicial()));
-                _builderURL.append("&hora_inicio=").append(fmtHora.format(encontro.getDataInicial()));
-                _builderURL.append("&hora_fim=").append(fmtHora.format(encontro.getDataFinal()));
+
+                try {
+                    if (encontro.getDataInicial() != null){
+                        _builderURL.append("&data_encontro=").append(fmt.format(encontro.getDataInicial()));
+                    }
+
+                    if (encontro.getDataInicial() != null){
+                        _builderURL.append("&hora_inicio=").append(fmtHora.format(encontro.getDataInicial()));
+                    }
+
+                    if (encontro.getDataFinal() != null){
+                        _builderURL.append("&hora_fim=").append(fmtHora.format(encontro.getDataFinal()));
+                    }
+                }
+                catch (Exception ex){
+
+                }
+
+
                 _builderURL.append("&cod_evento=").append(eventoID);
 
                 Log.d("WBS","URL: "+_builderURL.toString());
@@ -560,8 +723,18 @@ public class EventoWS {
             p.setDescricao(jsonKeyValue.getString("nome_evento"));
 
             try{
-                p.setDataInicial(parseDateTime((jsonKeyValue.getString("data_inicio"))));
-                p.setDataFinal(parseDateTime((jsonKeyValue.getString("data_fim"))));
+
+                String _data_inicio = jsonKeyValue.getString("data_inicio");
+                if (!_data_inicio.equals("")){
+                    p.setDataInicial(parseDateTime(_data_inicio +" 08:00"));
+                }
+
+                String _data_fim = jsonKeyValue.getString("data_fim");
+                if (!_data_fim.equals("")){
+                    p.setDataFinal(parseDateTime(_data_fim+" 08:00"));
+                }
+
+
 
             }
             catch (Exception ex){
@@ -582,7 +755,7 @@ public class EventoWS {
         if (dateString == null || dateString.equals(""))
             return null;
 
-        DateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat fmt = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 
         try {
             return fmt.parse(dateString);
@@ -598,8 +771,7 @@ public class EventoWS {
         try{
             p.setID(jsonKeyValue.getInt("cod_evento"));
             p.setDescricao(jsonKeyValue.getString("nome_evento"));
-            //  p.setEmail(json.getString("email"));
-            //  p.setMatricula(json.getInt("matricula"));
+
         }
         catch (JSONException e){
             e.printStackTrace();

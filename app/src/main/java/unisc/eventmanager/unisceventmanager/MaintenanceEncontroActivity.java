@@ -25,7 +25,6 @@ public class MaintenanceEncontroActivity extends Activity {
     private EditText m_EditTextDescricao;
     private EditText m_EditTextDataDe;
     private Button m_ButtonSalvar;
-    private EditText m_EditTextDataAte;
     private EditText m_EditTextHoraDe;
     private EditText m_EditTextHoraAte;
     private EncontroMO m_Encontro = null;
@@ -53,7 +52,6 @@ public class MaintenanceEncontroActivity extends Activity {
         m_EditTextDataDe = (EditText)this.findViewById(R.id.maintenance_encontro_EdtDataDe);
         m_EditTextHoraAte = (EditText)this.findViewById(R.id.maintenance_encontro_EdtHoraAte);
         m_EditTextHoraDe = (EditText)this.findViewById(R.id.maintenance_encontro_EdtHoraDe);
-        m_EditTextDataAte = (EditText)this.findViewById(R.id.maintenance_encontro_EdtDataAte);
         m_ButtonSalvar = (Button)this.findViewById(R.id.maintenance_encontro_BtnSalvar);
         m_ButtonSalvar.setOnClickListener(salvarEncontro());
 
@@ -69,6 +67,9 @@ public class MaintenanceEncontroActivity extends Activity {
 
         long _id = this.getIntent().getLongExtra("id", 0);
         if (_id > 0){
+
+            actionBar.setTitle("Encontro - Alterar");
+
             for (EncontroMO _encontr : MaintenanceEventActivity.m_Evento.GetEncontros()){
                 if (_id == _encontr.getID()){
                     m_Encontro = _encontr;
@@ -77,6 +78,9 @@ public class MaintenanceEncontroActivity extends Activity {
                 }
             }
 
+        }
+        else{
+            actionBar.setTitle("Encontro - Inclusão");
         }
 
         if (m_Encontro == null) {
@@ -89,12 +93,15 @@ public class MaintenanceEncontroActivity extends Activity {
 
 
         m_EditTextDescricao.setText(m_Encontro.getDescricao());
-        m_EditTextDataDe.setText(_dateFormat.format(m_Encontro.getDataInicial()));
-        m_EditTextDataAte.setText(_dateFormat.format(m_Encontro.getDataFinal()));
 
-        m_EditTextHoraDe.setText(_timeFormat.format(m_Encontro.getDataInicial()));
-        m_EditTextHoraAte.setText(_timeFormat.format(m_Encontro.getDataFinal()));
+        if (m_Encontro.getDataInicial() != null) {
+            m_EditTextDataDe.setText(_dateFormat.format(m_Encontro.getDataInicial()));
+            m_EditTextHoraDe.setText(_timeFormat.format(m_Encontro.getDataInicial()));
+        }
 
+        if (m_Encontro.getDataFinal() != null){
+            m_EditTextHoraAte.setText(_timeFormat.format(m_Encontro.getDataFinal()));
+        }
     }
 
 
@@ -136,7 +143,7 @@ public class MaintenanceEncontroActivity extends Activity {
                 }
                 else
                 {
-                    if (m_EditTextDataDe.getText().equals("") || m_EditTextDataAte.getText().equals("") ||
+                    if (m_EditTextDataDe.getText().equals("") ||
                             m_EditTextHoraDe.getText().equals("") || m_EditTextHoraAte.getText().equals(""))
                     {
                         Toast.makeText(MaintenanceEncontroActivity.this, "Informe o período!", Toast.LENGTH_LONG).show();
@@ -153,7 +160,7 @@ public class MaintenanceEncontroActivity extends Activity {
                             Date _dataDe = _dateFormatter.parse(m_EditTextDataDe.getText().toString());
                             Date _horaDe = _timeFormatter.parse(m_EditTextHoraDe.getText().toString());
 
-                            Date _dataAte = _dateFormatter.parse(m_EditTextDataAte.getText().toString());
+                            Date _dataAte = new Date();
                             Date _horaAte = _timeFormatter.parse(m_EditTextHoraAte.getText().toString());
 
                             _dataDe.setHours(_horaDe.getHours());
@@ -164,10 +171,8 @@ public class MaintenanceEncontroActivity extends Activity {
                             _dataAte.setMinutes(_horaAte.getMinutes());
                             _dataAte.setSeconds(0);
 
-                            m_Encontro.setDataFinal(_dataDe);
-                            m_Encontro.setDataInicial(_dataAte);
-
-
+                            m_Encontro.setDataInicial(_dataDe);
+                            m_Encontro.setDataFinal(_dataAte);
 
                         }
                         catch (Exception ex)

@@ -37,30 +37,26 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Data" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Hora"/>
-
 
     </LinearLayout>
 
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="datetime"
+        android:ems="10"
+        android:id="@+id/maintenance_encontro_EdtDataDe" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Hora" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-
-        <EditText
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:inputType="datetime"
-            android:ems="10"
-            android:id="@+id/maintenance_encontro_EdtDataDe" />
-
 
 
         <EditText
@@ -70,29 +66,6 @@
             android:inputType="datetime"
             android:ems="10"
             android:id="@+id/maintenance_encontro_EdtHoraDe" />
-
-
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Até" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <EditText
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:inputType="datetime"
-            android:ems="10"
-            android:id="@+id/maintenance_encontro_EdtDataAte" />
 
         <EditText
             android:layout_width="0dp"

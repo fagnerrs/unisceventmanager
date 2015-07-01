@@ -21,7 +21,6 @@ import unisc.eventmanager.unisceventmanager.classes.EncontroMO;
 import unisc.eventmanager.unisceventmanager.classes.EventoMO;
 import unisc.eventmanager.unisceventmanager.classes.NavigationManager;
 import unisc.eventmanager.unisceventmanager.fragments.IRefreshFragment;
-import unisc.eventmanager.unisceventmanager.fragments.MaintenanceEncontroFragment;
 import unisc.eventmanager.unisceventmanager.methods.EventoMT;
 import unisc.eventmanager.unisceventmanager.methods.EventoWS;
 
@@ -34,8 +33,7 @@ public class MaintenanceEventActivity extends Activity {
     private Button m_ButtonEncontro;
     private ListView m_ListViewEncontros;
     public static EventoMO m_Evento = null;
-    private EditText m_EditTextHoraAte;
-    private EditText m_EditTextHoraDe;
+
     private Button m_ButtonSalvar;
     private EncontrosAdapter m_encontroAdapter;
     private IRefreshFragment RefreshFragment;
@@ -69,8 +67,7 @@ public class MaintenanceEventActivity extends Activity {
 
         m_EditTextDescricao = (EditText)this.findViewById(R.id.maintenance_event_EdtDescr);
         m_EditTextDataDe = (EditText)this.findViewById(R.id.maintenance_event_EdtDataDe);
-        m_EditTextHoraAte = (EditText)this.findViewById(R.id.maintenance_event_EdtHoraAte);
-        m_EditTextHoraDe = (EditText)this.findViewById(R.id.maintenance_event_EdtHoraDe);
+
         m_EditTextDataAte = (EditText)this.findViewById(R.id.maintenance_event_EdtDataAte);
         m_ButtonEncontro = (Button)this.findViewById(R.id.maintenance_event_BtnNovoEncontro);
         m_ButtonSalvar = (Button)this.findViewById(R.id.maintenance_event_BtnSalvar);
@@ -85,6 +82,9 @@ public class MaintenanceEventActivity extends Activity {
 
         long _id = this.getIntent().getLongExtra("id", 0);
         if (_id > 0) {
+
+            actionBar.setTitle("Evento - Alterar");
+
             new EventoWS(this).RetornaEvento(_id, new EventoWS.IGetEventoResult() {
                 @Override
                 public void Result(EventoMO evento) {
@@ -97,8 +97,7 @@ public class MaintenanceEventActivity extends Activity {
                         m_EditTextDataDe.setText(_dateFormat.format(m_Evento.getDataInicial()));
                         m_EditTextDataAte.setText(_dateFormat.format(m_Evento.getDataFinal()));
 
-                        m_EditTextHoraDe.setText(_timeFormat.format(m_Evento.getDataInicial()));
-                        m_EditTextHoraAte.setText(_timeFormat.format(m_Evento.getDataFinal()));
+
                     } catch (Exception ex) {
 
                     }
@@ -108,7 +107,7 @@ public class MaintenanceEventActivity extends Activity {
                         public void Result(ArrayList<EncontroMO> encontros) {
 
                            m_Evento.SetEncontros(encontros);
-                            
+
                             atualizaListagemEncontros();
                         }
                     });
@@ -116,6 +115,8 @@ public class MaintenanceEventActivity extends Activity {
             });
         }
         else {
+
+            actionBar.setTitle("Evento - Incluir");
 
             if (m_Evento == null) {
                 m_Evento = new EventoMO();
@@ -127,11 +128,11 @@ public class MaintenanceEventActivity extends Activity {
             m_EditTextDescricao.setText(m_Evento.getDescricao());
 
             try {
+                m_EditTextDescricao.setText("");
                 m_EditTextDataDe.setText(_dateFormat.format(m_Evento.getDataInicial()));
                 m_EditTextDataAte.setText(_dateFormat.format(m_Evento.getDataFinal()));
 
-                m_EditTextHoraDe.setText(_timeFormat.format(m_Evento.getDataInicial()));
-                m_EditTextHoraAte.setText(_timeFormat.format(m_Evento.getDataFinal()));
+
             } catch (Exception ex) {
 
 
@@ -201,8 +202,7 @@ public class MaintenanceEventActivity extends Activity {
                 }
                 else
                 {
-                    if (m_EditTextDataDe.getText().equals("") || m_EditTextDataAte.getText().equals("") ||
-                            m_EditTextHoraDe.getText().equals("") || m_EditTextHoraAte.getText().equals(""))
+                    if (m_EditTextDataDe.getText().equals("") || m_EditTextDataAte.getText().equals(""))
                     {
                         Toast.makeText(MaintenanceEventActivity.this, "Informe o período!", Toast.LENGTH_LONG).show();
                     }
@@ -213,26 +213,16 @@ public class MaintenanceEventActivity extends Activity {
                             m_Evento.setDescricao(m_EditTextDescricao.getText().toString());
 
                             SimpleDateFormat _dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
-                            SimpleDateFormat _timeFormatter = new SimpleDateFormat("hh:mm");
 
-                            Date _dataDe = _dateFormatter.parse(m_EditTextDataDe.getText().toString());
-                            Date _horaDe = _timeFormatter.parse(m_EditTextHoraDe.getText().toString());
+                            if (!m_EditTextDataDe.getText().equals("")){
+                                Date _dataDe = _dateFormatter.parse(m_EditTextDataDe.getText().toString());
+                                m_Evento.setDataInicial(_dataDe);
+                            }
 
-                            Date _dataAte = _dateFormatter.parse(m_EditTextDataAte.getText().toString());
-                            Date _horaAte = _timeFormatter.parse(m_EditTextHoraAte.getText().toString());
-
-                            _dataDe.setHours(_horaDe.getHours());
-                            _dataDe.setMinutes(_horaDe.getMinutes());
-                            _dataDe.setSeconds(0);
-
-                            _dataAte.setHours(_horaAte.getHours());
-                            _dataAte.setMinutes(_horaAte.getMinutes());
-                            _dataAte.setSeconds(0);
-
-
-                            m_Evento.setDataInicial(_dataDe);
-                            m_Evento.setDataFinal(_dataAte);
-
+                            if (!m_EditTextDataDe.getText().equals("")){
+                                Date _dataAte = _dateFormatter.parse(m_EditTextDataAte.getText().toString());
+                                m_Evento.setDataFinal(_dataAte);
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -250,10 +240,15 @@ public class MaintenanceEventActivity extends Activity {
                                 @Override
                                 public void ListaEventosResult(ArrayList<EventoMO> eventos) {
 
-
                                     for (EncontroMO _encontro : m_Evento.GetEncontros() ){
 
-                                        new EventoWS(MaintenanceEventActivity.this).InserirEncontro(m_Evento.getID(), _encontro, null);
+                                        if (_encontro.getID() <= 0) {
+                                            new EventoWS(MaintenanceEventActivity.this).InserirEncontro(m_Evento.getID(), _encontro, null);
+                                        }
+                                        else
+                                        {
+                                            new EventoWS(MaintenanceEventActivity.this).AtualizarEncontro(m_Evento.getID(), _encontro, null);
+                                        }
 
                                     }
 
@@ -262,18 +257,26 @@ public class MaintenanceEventActivity extends Activity {
                             });
                         }
                         else{
-                            //m_EncontrosDeletados
+
                             new EventoWS(MaintenanceEventActivity.this).Atualizar(m_Evento, new EventoWS.IEventoResult() {
                                 @Override
                                 public void ListaEventosResult(ArrayList<EventoMO> eventos) {
 
 
                                     for (EncontroMO _encontro : m_Evento.GetEncontros() ){
-
-                                        new EventoWS(MaintenanceEventActivity.this).InserirEncontro(m_Evento.getID(), _encontro, null);
-
+                                        if (_encontro.getID() <= 0) {
+                                            new EventoWS(MaintenanceEventActivity.this).InserirEncontro(m_Evento.getID(), _encontro, null);
+                                        }
+                                        else
+                                        {
+                                            new EventoWS(MaintenanceEventActivity.this).AtualizarEncontro(m_Evento.getID(), _encontro, null);
+                                        }
                                     }
 
+                                    for (long _encontroId : m_EncontrosDeletados ) {
+
+                                        new EventoWS(MaintenanceEventActivity.this).ExcluirEncontro(_encontroId);
+                                    }
 
                                     MaintenanceEventActivity.this.onBackPressed();
                                 }

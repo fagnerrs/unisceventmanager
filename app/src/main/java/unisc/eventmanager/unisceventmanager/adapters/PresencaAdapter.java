@@ -15,7 +15,6 @@ import unisc.eventmanager.unisceventmanager.classes.EncontroMO;
 import unisc.eventmanager.unisceventmanager.classes.NavigationManager;
 import unisc.eventmanager.unisceventmanager.classes.PresencaMO;
 import unisc.eventmanager.unisceventmanager.fragments.IRefreshFragment;
-import unisc.eventmanager.unisceventmanager.fragments.MaintenanceEncontroFragment;
 
 
 /**

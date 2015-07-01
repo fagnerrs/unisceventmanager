@@ -7,22 +7,15 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text="Exportar Presenças"
-        android:id="@+id/fragment_presenca_btnExp"/>
+        android:text="PRESENÇAS"
+        android:id="@+id/fragment_presenca_btnExpPresencas"/>
 
-    <TextView
+    <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Listagem de Presenças"/>
+        android:layout_height="50dp"
+        android:text="FALTAS"
+        android:id="@+id/fragment_presenca_btnExpFaltas"/>
 
-    <ListView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_margin="3dp"
-        android:divider="#ECECEC"
-        android:background="#FFFFFFFF"
-        android:dividerHeight="1sp"
-        android:scrollbars="vertical"
-        android:id="@+id/fragment_presenca_ListView" />
+
 
 </LinearLayout>
